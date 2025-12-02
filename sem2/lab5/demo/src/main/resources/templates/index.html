@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo Tracker</title>
+</head>
+<body>
+<h1>ToDo List</h1>
+<ul>
+    <!-- Отображение задач -->
+    <li th:each="task : ${tasks}">
+        <span><strong>Описание:</strong> <span th:text="${task.description}"></span></span>
+        <span><strong>Время:</strong> <span th:text="${#temporals.format(task.createTime, 'yyyy-MM-dd HH:mm')}"></span></span>
+        <span><strong>Приоритет:</strong> <span th:text="${task.priority}"></span></span>
+        <span><strong>Категория:</strong> <span th:text="${task.category != null ? task.category : '—'}"></span></span>
+        <span><strong>Статус:</strong> <span th:text="${task.completed ? 'Выполнено' : 'В ожидании'}"></span></span>
+        <!-- Статус задачи -->
+        <!-- Ссылка для удаления задачи -->
+        <a th:href="@{/deleteTask/{id}(id=${task.id})}">Delete</a>
+        <!-- Форма для обновления статуса задачи -->
+        <form th:action="@{/updateTask/{id}(id=${task.id})}" method="post"
+              style="display:inline;">
+            <input type="hidden" name="completed" th:value="true"
+                   th:if="${!task.completed}">
+            <input type="hidden" name="completed" th:value="false"
+                   th:if="${task.completed}">
+            <button type="submit" th:text="${task.completed ? 'Mark as Pending' : 'Mark as Completed'}"></button>
+        </form>
+    </li>
+</ul>
+<h2>Add New Task</h2>
+<!-- Форма для добавления новой задачи -->
+<form th:action="@{/addTask}" method="post">
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" required>
+    <label for="priority">Приоритет:</label>
+    <select id="priority" name="priority">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+    </select>
+    <label for="category">Категория:</label>
+    <select id="category" name="category">
+        <option>Job</option>
+        <option>Study</option>
+        <option>House</option>
+        <option>Shopping</option>
+        <option>Health</option>
+        <option>Family</option>
+        <option>Personal development</option>
+        <option>Meetings</option>
+    </select>
+    <button type="submit">Add Task</button>
+</form>
+</body>
+</html>

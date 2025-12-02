@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRental - Вход</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Вход в систему</h1>
+
+<div th:if="${param.error}" class="alert error">
+    Неверное имя пользователя или пароль
+</div>
+<div th:if="${param.logout}" class="alert success">
+    Вы успешно вышли из системы
+</div>
+
+<form th:action="@{/login}" method="post">
+    <label for="username">Имя пользователя:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+
+    <button type="submit" class="btn">Войти</button>
+</form>
+
+<br>
+<p><strong>Тестовые пользователи:</strong></p>
+<p>Админ: admin / admin</p>
+<p>Пользователь: user / password</p>
+
+<br>
+<a th:href="@{/}" class="btn">На главную</a>
+</body>
+</html>

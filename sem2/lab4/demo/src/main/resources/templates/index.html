@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRental - Главная</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Добро пожаловать в CarRental!</h1>
+<p>Лучшие автомобили для ваших поездок.</p>
+
+<!-- Скрываем блоки по умолчанию, показываем через JavaScript -->
+<div id="anonymousBlock" style="display: none;">
+    <a th:href="@{/login}" class="btn">Войти</a>
+    <a th:href="@{/catalog}" class="btn">Перейти в каталог</a>
+</div>
+
+<div id="authenticatedBlock" style="display: none;">
+    <div class="user-info">
+        <p>Вы вошли как: <strong id="username"></strong></p>
+    </div>
+    <a th:href="@{/catalog}" class="btn">Перейти в каталог</a>
+    <a th:href="@{/my-orders}" class="btn">Мои заказы</a>
+
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <button type="submit" class="btn logout-btn">Выйти</button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var isAuthenticated = /*[[${isAuthenticated}]]*/ false;
+    var username = /*[[${username}]]*/ '';
+    /*]]>*/
+
+    if (isAuthenticated) {
+        document.getElementById('authenticatedBlock').style.display = 'block';
+        document.getElementById('username').textContent = username;
+    } else {
+        document.getElementById('anonymousBlock').style.display = 'block';
+    }
+</script>
+</body>
+</html>

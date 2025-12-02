@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Аренда автомобиля</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Аренда автомобиля: <span th:text="${car.brand + ' ' + car.model}"></span></h1>
+
+<div class="user-info">
+    <p>Вы вошли как: <strong th:text="${currentUser}"></strong></p>
+</div>
+
+<div class="car-info">
+    <p><strong>Год:</strong> <span th:text="${car.year}"></span></p>
+    <p><strong>Цвет:</strong> <span th:text="${car.color}"></span></p>
+    <p><strong>Цена за день:</strong> <span th:text="${car.pricePerDay}"></span> руб.</p>
+</div>
+
+<form th:action="@{/rent}" th:object="${rentalRequest}" method="post">
+    <input type="hidden" name="carId" th:value="${car.id}">
+
+    <h3>Личные данные</h3>
+
+    <label for="customerName">Ваше ФИО:</label>
+    <input type="text" id="customerName" name="customerName" th:field="*{customerName}" required
+           placeholder="Введите ваше полное имя">
+    <br>
+
+    <label for="customerPhone">Номер телефона:</label>
+    <input type="tel" id="customerPhone" name="customerPhone" th:field="*{customerPhone}" required
+           placeholder="+7 (XXX) XXX-XX-XX" pattern="\+7\s?[\(]{0,1}[0-9]{3}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
+    <br>
+
+    <label for="customerEmail">Email:</label>
+    <input type="email" id="customerEmail" name="customerEmail" th:field="*{customerEmail}" required
+           placeholder="example@mail.ru">
+    <br>
+
+    <label for="rentalDays">Количество дней аренды:</label>
+    <input type="number" id="rentalDays" name="rentalDays" th:field="*{rentalDays}" min="1" max="30" required>
+    <br>
+
+    <div class="rental-summary">
+        <p><strong>Итоговая стоимость:</strong>
+            <span id="totalCost" th:text="${car.pricePerDay * rentalRequest.rentalDays}">0</span> руб.</p>
+    </div>
+
+    <button type="submit" class="btn">Подтвердить аренду</button>
+</form>
+
+<br>
+<a th:href="@{/catalog}" class="btn">Вернуться в каталог</a>
+
+<script>
+    // Автоматический расчет стоимости при изменении количества дней
+    document.getElementById('rentalDays').addEventListener('input', function() {
+        var days = this.value;
+        var pricePerDay = [[${car.pricePerDay}]];
+        var totalCost = days * pricePerDay;
+        document.getElementById('totalCost').textContent = totalCost.toFixed(2);
+    });
+</script>
+</body>
+</html>
