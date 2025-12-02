@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRental - Каталог</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Наш каталог автомобилей</h1>
+<div th:if="${param.success}" class="alert success">Автомобиль успешно арендован!</div>
+<div th:if="${param.error}" class="alert error">Не удалось арендовать автомобиль. Возможно, он уже занят.</div>
+
+<div class="user-info" th:if="${currentUser}">
+    <p>Вы вошли как: <strong th:text="${currentUser}"></strong></p>
+</div>
+
+<div class="car-list">
+    <div th:each="car : ${cars}" class="car-card">
+        <h2 th:text="${car.brand + ' ' + car.model}">Brand Model</h2>
+        <p>Год: <span th:text="${car.year}"></span></p>
+        <p>Цвет: <span th:text="${car.color}"></span></p>
+        <p>Стоимость аренды: <span th:text="${car.pricePerDay}"></span> руб./день</p>
+        <p>Статус:
+            <span th:if="${car.isAvailable}" style="color: green;">Доступен</span>
+            <span th:unless="${car.isAvailable}" style="color: red;">Занят</span>
+        </p>
+        <a th:if="${car.isAvailable}" th:href="@{/rent/{id}(id=${car.id})}" class="btn">Арендовать</a>
+    </div>
+</div>
+<br>
+<div class="navigation-buttons">
+    <a th:href="@{/}" class="btn">На главную</a>
+    <a th:href="@{/my-orders}" class="btn">Мои заказы</a>
+    <!-- Кнопка админ-панели видна только админам -->
+    <a th:if="${isAdmin}" th:href="@{/admin}" class="btn" style="background-color: #28a745;">Админ панель</a>
+    <a th:if="${isAdmin}" th:href="@{/admin/orders}" class="btn" style="background-color: #6f42c1;">Все заказы</a>
+</div>
+</body>
+</html>

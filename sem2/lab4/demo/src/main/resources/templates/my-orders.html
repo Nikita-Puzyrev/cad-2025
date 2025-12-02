@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>CarRental - Мои заказы</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Мои заказы</h1>
+<p>Здравствуйте, <strong th:text="${username}"></strong>! Здесь отображены все ваши текущие аренды.</p>
+
+<div th:if="${param.cancelSuccess}" class="alert success">Заказ успешно отменен!</div>
+<div th:if="${param.cancelError}" class="alert error">Не удалось отменить заказ. Возможно, заказ уже завершен или вы не являетесь его владельцем.</div>
+
+<div th:if="${rentals.empty}" class="alert" style="background-color: #e2e3e5; color: #383d41;">
+  <p>У вас пока нет активных заказов.</p>
+  <a th:href="@{/catalog}" class="btn">Перейти к аренде</a>
+</div>
+
+<div class="order-list">
+  <div th:each="rental : ${rentals}" class="order-card">
+    <div class="order-header">
+      <h3>Заказ №<span th:text="${rental.id}"></span></h3>
+      <span class="status-badge" th:classappend="${rental.isActive()} ? 'active' : 'returned'"
+            th:text="${rental.isActive()} ? 'Активен' : 'Завершен'"></span>
+    </div>
+
+    <div class="order-details">
+      <div class="car-info">
+        <p><strong>Автомобиль:</strong> <span th:text="${rental.car.brand + ' ' + rental.car.model}"></span></p>
+        <p><strong>Год:</strong> <span th:text="${rental.car.year}"></span></p>
+        <p><strong>Цвет:</strong> <span th:text="${rental.car.color}"></span></p>
+      </div>
+
+      <div class="rental-info">
+        <p><strong>Продолжительность:</strong> <span th:text="${rental.rentalDays}"></span> дн.</p>
+        <p><strong>Общая стоимость:</strong> <span th:text="${rental.totalCost}"></span> руб.</p>
+        <p><strong>Дата аренды:</strong> <span th:text="${#temporals.format(rental.rentalDate, 'dd.MM.yyyy HH:mm')}"></span></p>
+      </div>
+
+      <div class="contact-info">
+        <p><strong>Ваши контактные данные:</strong></p>
+        <p>Телефон: <span th:text="${rental.customerPhone}"></span></p>
+        <p>Email: <span th:text="${rental.customerEmail}"></span></p>
+      </div>
+    </div>
+
+    <div class="order-actions" th:if="${rental.isActive()}">
+      <form th:action="@{/cancel-order/{id}(id=${rental.id})}" method="post" style="display: inline;">
+        <button type="submit" class="btn" style="background-color: #dc3545;"
+                onclick="return confirm('Вы уверены, что хотите отменить этот заказ?')">
+          Отменить заказ
+        </button>
+      </form>
+      <p class="note" style="margin-top: 10px;">
+        <small>Отмена доступна только для активных заказов. После отмены автомобиль снова станет доступен для аренды.</small>
+      </p>
+    </div>
+
+    <div th:unless="${rental.isActive()}" class="order-actions">
+      <p class="note">Этот заказ уже завершен. Для новой аренды перейдите в каталог.</p>
+    </div>
+
+    <hr>
+  </div>
+</div>
+
+<br>
+<div class="navigation-buttons">
+  <a th:href="@{/catalog}" class="btn">Вернуться в каталог</a>
+  <a th:href="@{/}" class="btn">На главную</a>
+</div>
+</body>
+</html>

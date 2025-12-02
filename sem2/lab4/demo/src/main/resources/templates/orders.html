@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRental - Все заказы</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Все заказы системы</h1>
+<p>Административный просмотр всех аренд в системе.</p>
+
+<div th:if="${rentals.empty}" class="alert" style="background-color: #e2e3e5; color: #383d41;">
+    <p>В системе пока нет заказов.</p>
+</div>
+
+<div class="order-list">
+    <div th:each="rental : ${rentals}" class="order-card admin-order">
+        <div class="order-header">
+            <h3>Заказ №<span th:text="${rental.id}"></span></h3>
+            <span class="status-badge" th:classappend="${rental.car.isAvailable} ? 'returned' : 'active'"
+                  th:text="${rental.car.isAvailable} ? 'Завершен' : 'Активен'"></span>
+        </div>
+
+        <div class="order-details">
+            <div class="customer-info">
+                <p><strong>Клиент:</strong> <span th:text="${rental.customerName}"></span></p>
+                <p><strong>Логин:</strong> <span th:text="${rental.userLogin}"></span></p>
+                <p><strong>Телефон:</strong> <span th:text="${rental.customerPhone}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${rental.customerEmail}"></span></p>
+            </div>
+
+            <div class="car-info">
+                <p><strong>Автомобиль:</strong> <span th:text="${rental.car.brand + ' ' + rental.car.model}"></span></p>
+                <p><strong>Год:</strong> <span th:text="${rental.car.year}"></span></p>
+                <p><strong>Цвет:</strong> <span th:text="${rental.car.color}"></span></p>
+            </div>
+
+            <div class="rental-info">
+                <p><strong>Продолжительность:</strong> <span th:text="${rental.rentalDays}"></span> дн.</p>
+                <p><strong>Общая стоимость:</strong> <span th:text="${rental.totalCost}"></span> руб.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<div class="navigation-buttons">
+    <a th:href="@{/admin}" class="btn">В админ-панель</a>
+    <a th:href="@{/catalog}" class="btn">В каталог</a>
+</div>
+</body>
+</html>

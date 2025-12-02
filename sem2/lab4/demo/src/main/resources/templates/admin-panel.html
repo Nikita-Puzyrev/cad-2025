@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CarRental - Админ панель</title>
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+<h1>Административная панель</h1>
+
+<div th:if="${param.success}" class="alert success">Автомобиль успешно добавлен!</div>
+<div th:if="${param.updated}" class="alert success">Автомобиль успешно обновлен!</div>
+<div th:if="${param.deleted}" class="alert success">Автомобиль успешно удален!</div>
+<div th:if="${param.returned}" class="alert success">Автомобиль возвращен!</div>
+<div th:if="${param.rentalDeleted}" class="alert success">Запись об аренде удалена!</div>
+<div th:if="${param.error}" class="alert error">Произошла ошибка!</div>
+
+<div class="admin-actions">
+    <a th:href="@{/admin/add-car}" class="btn">Добавить автомобиль</a>
+    <a th:href="@{/catalog}" class="btn">Каталог</a>
+    <a th:href="@{/admin/orders}" class="btn">Все заказы</a>
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+        <button type="submit" class="btn logout-btn">Выйти</button>
+    </form>
+</div>
+
+<h2>Управление автомобилями</h2>
+<div class="car-list">
+    <div th:each="car : ${cars}" class="car-card">
+        <h3 th:text="${car.brand + ' ' + car.model}"></h3>
+        <p>Год: <span th:text="${car.year}"></span></p>
+        <p>Цвет: <span th:text="${car.color}"></span></p>
+        <p>Цена за день: <span th:text="${car.pricePerDay}"></span> руб.</p>
+        <p>Статус:
+            <span th:if="${car.isAvailable}" style="color: green;">Доступен</span>
+            <span th:unless="${car.isAvailable}" style="color: red;">Занят</span>
+        </p>
+        <div class="admin-buttons">
+            <a th:href="@{/admin/edit-car/{id}(id=${car.id})}" class="btn" style="background-color: #ffc107; color: black;">Редактировать</a>
+            <form th:action="@{/admin/delete-car/{id}(id=${car.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn logout-btn"
+                        th:disabled="${!car.isAvailable}"
+                        th:title="${car.isAvailable} ? 'Удалить автомобиль' : 'Нельзя удалить арендованный автомобиль'">
+                    Удалить
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h2>Текущие аренды</h2>
+<div class="order-list">
+    <div th:each="rental : ${rentals}" class="order-card admin-order">
+        <div class="order-header">
+            <h3>Заказ №<span th:text="${rental.id}"></span></h3>
+            <span class="status-badge" th:classappend="${rental.car.isAvailable} ? 'returned' : 'active'"
+                  th:text="${rental.car.isAvailable} ? 'Завершен' : 'Активен'"></span>
+        </div>
+
+        <div class="order-details">
+            <div class="customer-info">
+                <p><strong>Клиент:</strong> <span th:text="${rental.customerName}"></span></p>
+                <p><strong>Логин:</strong> <span th:text="${rental.userLogin}"></span></p>
+                <p><strong>Телефон:</strong> <span th:text="${rental.customerPhone}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${rental.customerEmail}"></span></p>
+            </div>
+
+            <div class="car-info">
+                <p><strong>Автомобиль:</strong> <span th:text="${rental.car.brand + ' ' + rental.car.model}"></span></p>
+                <p><strong>Год:</strong> <span th:text="${rental.car.year}"></span></p>
+                <p><strong>Цвет:</strong> <span th:text="${rental.car.color}"></span></p>
+            </div>
+
+            <div class="rental-info">
+                <p><strong>Продолжительность:</strong> <span th:text="${rental.rentalDays}"></span> дн.</p>
+                <p><strong>Общая стоимость:</strong> <span th:text="${rental.totalCost}"></span> руб.</p>
+            </div>
+        </div>
+
+        <div class="admin-buttons">
+            <form th:action="@{/admin/return-car/{id}(id=${rental.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn" style="background-color: #17a2b8;">Завершить аренду</button>
+            </form>
+            <form th:action="@{/admin/delete-rental/{id}(id=${rental.id})}" method="post" style="display: inline;">
+                <button type="submit" class="btn logout-btn">Удалить запись</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
