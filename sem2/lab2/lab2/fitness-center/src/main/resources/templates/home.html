@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/fitness/" class="navbar-brand">Фитнес-центр</a>
+            <ul class="navbar-menu">
+                <li><a href="/fitness/" class="navbar-link active">Главная</a></li>
+                <li><a href="/fitness/members" class="navbar-link">Члены</a></li>
+                <li><a href="/fitness/workouts" class="navbar-link">Тренировки</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container main-content">
+        
+        <div class="card">
+            <h2 class="card-title">О системе</h2>
+            <p>Система управления фитнес-центром помогает организовать работу с членами клуба и тренировками.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <h3 class="card-title">Управление членами</h3>
+                    <p>Добавляйте, редактируйте и удаляйте членов фитнес-центра.</p>
+                    <a href="/fitness/members" class="btn btn-primary mt-2">Перейти</a>
+                </div>
+            </div>
+            
+            <div class="col-6">
+                <div class="card">
+                    <h3 class="card-title">Управление тренировками</h3>
+                    <p>Создавайте и управляйте тренировочными программами.</p>
+                    <a href="/fitness/workouts" class="btn btn-primary mt-2">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <h3 class="card-title">Быстрые действия</h3>
+            <div class="row">
+                <div class="col-6">
+                    <a href="/fitness/members?action=add" class="btn btn-success w-100 mb-2">+ Добавить члена</a>
+                </div>
+                <div class="col-6">
+                    <a href="/fitness/workouts?action=add" class="btn btn-success w-100 mb-2">+ Добавить тренировку</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
