@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.id != null ? 'Редактирование категории' : 'Добавление категории'}">Добавление категории</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/database.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <h1>
+                    <i class="fas" th:classappend="${category.id != null ? 'fa-edit' : 'fa-plus-circle'}"></i>
+                    <span th:text="${category.id != null ? 'Редактирование категории' : 'Добавление категории'}">
+                        Добавление категории
+                    </span>
+                </h1>
+                <div class="user-info" sec:authorize="isAuthenticated()">
+                    <span class="username">
+                        <i class="fas fa-user"></i>
+                        <span sec:authentication="name">Пользователь</span>
+                    </span>
+                </div>
+            </div>
+            
+            <nav class="navbar">
+                <a href="/web/"><i class="fas fa-home"></i> Главная</a>
+                <a href="/web/equipment"><i class="fas fa-list"></i> Каталог</a>
+                <a href="/web/equipment/add" sec:authorize="hasRole('USER')"><i class="fas fa-plus"></i> Добавить оборудование</a>
+                <a href="/web/categories"><i class="fas fa-folder"></i> Категории</a>
+                <a href="/web/stats" sec:authorize="isAuthenticated()"><i class="fas fa-chart-bar"></i> Статистика</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <form th:action="${category.id != null ? 
+                                 '/web/categories/edit/' + category.id : 
+                                 '/web/categories/add'}" 
+                      th:object="${category}" method="post" class="category-form">
+                    
+                    <div th:if="${error}" class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span th:text="${error}">Ошибка</span>
+                    </div>
+                    
+                    <div th:if="${category.id != null}" class="form-info">
+                        <p><strong>ID категории:</strong> <span th:text="${category.id}">1</span></p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-tag"></i> Название категории *
+                        </label>
+                        <input type="text" id="name" th:field="*{name}" 
+                               placeholder="Например: Гитары" required>
+                        <small>Название должно быть уникальным</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-align-left"></i> Описание
+                        </label>
+                        <textarea id="description" th:field="*{description}" 
+                                  rows="4" 
+                                  placeholder="Подробное описание категории..."></textarea>
+                        <small>Максимум 500 символов</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span th:text="${category.id != null ? 'Сохранить изменения' : 'Сохранить категорию'}">
+                                Сохранить категорию
+                            </span>
+                        </button>
+                        <a href="/web/categories" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 Музыкальный Магазин.</p>
+        </footer>
+    </div>
+</body>
+</html>

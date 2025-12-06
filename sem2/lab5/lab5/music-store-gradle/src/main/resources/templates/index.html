@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музыкальный Магазин - Главная</title>
+    <link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <h1><i class="fas fa-guitar"></i> Музыкальный Магазин</h1>
+                <div class="user-info" th:if="${isAuthenticated}">
+                    <span class="username">
+                        <i class="fas fa-user"></i>
+                        <span th:text="${username}">Пользователь</span>
+                    </span>
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-outline">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </button>
+                    </form>
+                </div>
+                <div class="user-info" th:unless="${isAuthenticated}">
+                    <a href="/login" class="btn btn-sm btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </a>
+                </div>
+            </div>
+
+            <nav class="navbar">
+    <a href="/web/" class="active"><i class="fas fa-home"></i> Главная</a>
+    <a href="/web/equipment"><i class="fas fa-list"></i> Каталог</a>
+    <a href="/web/equipment/add" sec:authorize="hasRole('USER')"><i class="fas fa-plus"></i> Добавить</a>
+    <a href="/web/equipment/edit/1" sec:authorize="hasRole('MODERATOR')" style="display: none;">Скрытая ссылка</a>
+    <a href="/web/stats" sec:authorize="isAuthenticated()"><i class="fas fa-chart-bar"></i> Статистика</a>
+    <a href="/api/equipment" target="_blank"><i class="fas fa-code"></i> API</a>
+</nav>
+        </header>
+
+        <main class="main-content">
+            <section class="hero">
+                <h2>Добро пожаловать в магазин музыкального оборудования!</h2>
+                <p>Управляйте вашим инвентарем с легкостью</p>
+            </section>
+            <!-- В main-content добавьте этот блок после hero -->
+<section class="database-status">
+    <div class="status-card">
+        <i class="fas fa-database"></i>
+        <div>
+            <h3>База данных SQLite</h3>
+            <p>Все данные сохраняются между запусками приложения</p>
+            <small>Файл: <code>music_store.db</code> | Товаров: 
+                <span th:text="${totalEquipment}">0</span> | 
+                Категорий: <span th:text="${@equipmentService.getAllCategories().size()}">0</span>
+            </small>
+        </div>
+    </div>
+</section>
+
+
+
+
+<div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-drum"></i>
+                    <h3>Позиций оборудования</h3>
+                    <p class="stat-number" th:text="${totalEquipment}">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-boxes"></i>
+                    <h3>Всего единиц</h3>
+                    <p class="stat-number" th:text="${totalItems}">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Общая стоимость</h3>
+                    <p class="stat-number" th:text="${'$' + #numbers.formatDecimal(totalValue, 1, 2, 'POINT')}">$0</p>
+                </div>
+            </div>
+
+            <section class="quick-actions">
+                <h2>Быстрые действия</h2>
+                <div class="action-buttons">
+                    <a href="/web/equipment/add" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Добавить оборудование
+                    </a>
+                    <a href="/web/equipment" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> Просмотреть каталог
+                    </a>
+                    <a href="/web/equipment/search" class="btn btn-success">
+                        <i class="fas fa-search"></i> Поиск оборудования
+                    </a>
+                </div>
+            </section>
+
+            <section class="recent-equipment">
+                <h2>Последние добавления</h2>
+                <div class="equipment-grid">
+                    <div class="equipment-card" th:each="equipment : ${equipmentList}" 
+                         th:if="${equipment.quantity > 0}">
+                        <div class="equipment-header">
+                            <h3 th:text="${equipment.name}">Название</h3>
+                            <span class="badge" 
+                                  th:classappend="${equipment.quantity > 10 ? 'badge-success' : 
+                                                  equipment.quantity > 5 ? 'badge-warning' : 'badge-danger'}">
+                                <i class="fas fa-box"></i> 
+                                <span th:text="${equipment.quantity}">0</span> шт.
+                            </span>
+                        </div>
+                        <p class="equipment-brand" th:text="${equipment.brand}">Бренд</p>
+                        <p class="equipment-price" 
+                           th:text="${'$' + #numbers.formatDecimal(equipment.price, 1, 2, 'POINT')}">$0</p>
+                        <div class="equipment-footer">
+                            <a th:href="@{/web/equipment/edit/{id}(id=${equipment.id})}" 
+                               class="btn btn-sm btn-outline">
+                                <i class="fas fa-edit"></i> Редактировать
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

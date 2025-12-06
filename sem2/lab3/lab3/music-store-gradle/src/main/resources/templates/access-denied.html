@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ запрещен</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="access-denied">
+            <div class="error-icon">
+                <i class="fas fa-ban fa-5x"></i>
+            </div>
+            <h1>Доступ запрещен!</h1>
+            <p class="error-message" th:text="${error}">У вас нет прав для доступа к этой странице.</p>
+            <p>Для доступа к этой функции необходимы соответствующие права.</p>
+            
+            <div class="role-info">
+                <h3>Требуемые роли:</h3>
+                <div class="roles">
+                    <span class="badge badge-admin"><i class="fas fa-crown"></i> ADMIN</span>
+                    <span class="badge badge-moderator"><i class="fas fa-shield-alt"></i> MODERATOR</span>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/web/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+                <a href="/login" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i> Войти под другим пользователем
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

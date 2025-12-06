@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика магазина</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-chart-bar"></i> Статистика магазина</h1>
+            <nav class="navbar">
+                <a href="/web/"><i class="fas fa-home"></i> Главная</a>
+                <a href="/web/equipment"><i class="fas fa-list"></i> Каталог</a>
+                <a href="/web/equipment/add"><i class="fas fa-plus"></i> Добавить</a>
+                <a href="/web/stats" class="active"><i class="fas fa-chart-bar"></i> Статистика</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="stats-overview">
+                <div class="stat-card-large">
+                    <i class="fas fa-drum fa-2x"></i>
+                    <div class="stat-content">
+                        <h3>Всего позиций</h3>
+                        <p class="stat-number-large" th:text="${totalEquipment}">0</p>
+                        <p class="stat-description">Уникальных наименований оборудования</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card-large">
+                    <i class="fas fa-boxes fa-2x"></i>
+                    <div class="stat-content">
+                        <h3>Всего единиц</h3>
+                        <p class="stat-number-large" th:text="${totalItems}">0</p>
+                        <p class="stat-description">Единиц оборудования на складе</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card-large">
+                    <i class="fas fa-money-bill-wave fa-2x"></i>
+                    <div class="stat-content">
+                        <h3>Общая стоимость</h3>
+                        <p class="stat-number-large" 
+                           th:text="${'$' + #numbers.formatDecimal(totalValue, 1, 2, 'COMMA')}">$0</p>
+                        <p class="stat-description">Стоимость всего инвентаря</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detailed-stats">
+                <h2>Детальная статистика</h2>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Название</th>
+                            <th>Бренд</th>
+                            <th>Цена за единицу</th>
+                            <th>Количество</th>
+                            <th>Общая стоимость</th>
+                            <th>Процент от общего</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="equipment : ${equipmentList}">
+                            <td th:text="${equipment.name}">Название</td>
+                            <td th:text="${equipment.brand}">Бренд</td>
+                            <td th:text="${'$' + #numbers.formatDecimal(equipment.price, 1, 2, 'COMMA')}">
+                                $0.00
+                            </td>
+                            <td th:text="${equipment.quantity}">0</td>
+                            <td th:text="${'$' + #numbers.formatDecimal(equipment.totalValue, 1, 2, 'COMMA')}">
+                                $0.00
+                            </td>
+                            <td>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" 
+                                         th:style="'width: ' + ${equipment.totalValue / totalValue * 100} + '%;'">
+                                    </div>
+                                    <span th:text="${#numbers.formatDecimal(equipment.totalValue / totalValue * 100, 1, 1, 'COMMA')} + '%'">
+                                        0%
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 Музыкальный Магазин. Статистика обновляется в реальном времени</p>
+        </footer>
+    </div>
+</body>
+</html>

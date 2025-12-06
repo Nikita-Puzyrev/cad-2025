@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎵 Музыкальный Магазин (Gradle)</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .endpoint { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        code { background: #e0e0e0; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎸 Магазин Музыкального Оборудования (Gradle)</h1>
+        <p>Сборка проекта с помощью Gradle</p>
+    </div>
+    
+    <h2>📡 API Endpoints:</h2>
+    <div class="endpoint">
+        <strong>GET</strong> <code>/api/equipment/</code> - Все товары
+    </div>
+    <div class="endpoint">
+        <strong>GET</strong> <code>/api/equipment/count</code> - Статистика
+    </div>
+    <div class="endpoint">
+        <strong>GET</strong> <code>/api/equipment/total-value</code> - Общая стоимость
+    </div>
+    
+    <h2>🔧 Gradle команды:</h2>
+    <pre><code>
+gradlew bootRun    # Запуск приложения
+gradlew build      # Сборка проекта
+gradlew test       # Запуск тестов
+gradlew bootJar    # Создание исполняемого JAR
+    </code></pre>
+</body>
+</html>
