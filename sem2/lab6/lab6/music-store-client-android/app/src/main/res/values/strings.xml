@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Music Store</string>
+    
+    <!-- Main Activity -->
+    <string name="welcome_title">Музыкальный магазин</string>
+    <string name="welcome_subtitle">Управление товарами и заказами</string>
+    <string name="btn_products">Товары</string>
+    <string name="btn_orders">Заказы</string>
+    <string name="btn_settings">Настройки</string>
+    <string name="btn_exit">Выход</string>
+    
+    <!-- Products Activity -->
+    <string name="products_title">Товары</string>
+    <string name="search_hint">Поиск товаров...</string>
+    <string name="add_product">Добавить товар</string>
+    <string name="no_products">Товары не найдены</string>
+    <string name="loading">Загрузка...</string>
+    <string name="error_loading">Ошибка загрузки</string>
+    <string name="retry">Повторить</string>
+    
+    <!-- Product Details -->
+    <string name="product_name">Название</string>
+    <string name="product_price">Цена</string>
+    <string name="product_stock">На складе</string>
+    <string name="product_category">Категория</string>
+    <string name="product_description">Описание</string>
+    <string name="btn_edit">Редактировать</string>
+    <string name="btn_delete">Удалить</string>
+    <string name="btn_back">Назад</string>
+    
+    <!-- Dialogs -->
+    <string name="add_product_title">Добавить товар</string>
+    <string name="edit_product_title">Редактировать товар</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete_confirm">Удалить товар?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    
+    <!-- Categories -->
+    <string name="category_guitar">Гитара</string>
+    <string name="category_amp">Усилитель</string>
+    <string name="category_effect">Эффект</string>
+    <string name="category_accessory">Аксессуар</string>
+    
+    <!-- Status -->
+    <string name="connection_success">Соединение установлено</string>
+    <string name="connection_error">Ошибка подключения</string>
+</resources>
