@@ -110,160 +110,82 @@ les04/lab
 
 
 
-\## UML-диаграмма классов (Mermaid)
-
-
+## UML-диаграмма классов
 
 ```mermaid
-
 classDiagram
 
-
-
 class Product {
-
-&nbsp;   long productId
-
-&nbsp;   String name
-
-&nbsp;   String description
-
-&nbsp;   int categoryId
-
-&nbsp;   BigDecimal price
-
-&nbsp;   int stockQuantity
-
-&nbsp;   String imageUrl
-
-&nbsp;   Date createdAt
-
-&nbsp;   Date updatedAt
-
+  long productId
+  String name
+  String description
+  int categoryId
+  BigDecimal price
+  int stockQuantity
+  String imageUrl
+  Date createdAt
+  Date updatedAt
 }
-
-
 
 class Reader {
-
-&nbsp;   <<interface>>
-
-&nbsp;   read() String
-
+  <<interface>>
+  read() String
 }
-
-
 
 class ResourceFileReader {
-
-&nbsp;   read() String
-
+  read() String
 }
-
-
 
 class Parser {
-
-&nbsp;   <<interface>>
-
-&nbsp;   parse(String) List~Product~
-
+  <<interface>>
+  parse(String) List~Product~
 }
-
-
 
 class CSVParser {
-
-&nbsp;   parse(String) List~Product~
-
+  parse(String) List~Product~
 }
-
-
 
 class ProductProvider {
-
-&nbsp;   <<interface>>
-
-&nbsp;   getProducts() List~Product~
-
+  <<interface>>
+  getProducts() List~Product~
 }
-
-
 
 class ConcreteProductProvider {
-
-&nbsp;   Reader reader
-
-&nbsp;   Parser parser
-
-&nbsp;   getProducts() List~Product~
-
+  Reader reader
+  Parser parser
+  getProducts() List~Product~
 }
-
-
 
 class Renderer {
-
-&nbsp;   <<interface>>
-
-&nbsp;   render()
-
+  <<interface>>
+  render()
 }
-
-
 
 class ConsoleTableRenderer {
-
-&nbsp;   render()
-
+  render()
 }
-
-
 
 class HTMLTableRenderer {
-
-&nbsp;   render()
-
+  render()
 }
 
-
-
-class CSVParserTimingAspect {
-
-&nbsp;   <<Aspect>>
-
-&nbsp;   measureParsingTime()
-
-}
-
-
+class CSVParserTimingAspect
 
 Reader <|.. ResourceFileReader
-
 Parser <|.. CSVParser
-
 ProductProvider <|.. ConcreteProductProvider
-
 Renderer <|.. ConsoleTableRenderer
-
 Renderer <|.. HTMLTableRenderer
 
+ConcreteProductProvider --> Reader
+ConcreteProductProvider --> Parser
+ConcreteProductProvider --> Product
 
+ConsoleTableRenderer --> ProductProvider
+HTMLTableRenderer --> ProductProvider
 
-ConcreteProductProvider o-- Reader
-
-ConcreteProductProvider o-- Parser
-
-HTMLTableRenderer o-- ProductProvider
-
-ConsoleTableRenderer o-- ProductProvider
-
-
-
-CSVParserTimingAspect ..> CSVParser : AOP
-
-Parser .. Product
-
+CSVParserTimingAspect ..> CSVParser
+```
 
 
 \## Вывод
