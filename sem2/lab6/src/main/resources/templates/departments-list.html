@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Список департаментов</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<h1>Список департаментов</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="dep, stat : ${departments}">
+        <td th:text="${stat.count}"></td>
+        <td th:text="${dep.name}"></td>
+        <td th:text="${dep.description}"></td>
+        <td>
+            <a th:href="@{'/departments/edit/' + ${dep.id}}">Редактировать</a>
+            <a th:href="@{'/departments/delete/' + ${dep.id}}">Удалить</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/departments/add}">Добавить департамент</a>
+</body>
+</html>

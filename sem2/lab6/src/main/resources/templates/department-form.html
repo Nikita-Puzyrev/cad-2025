@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Добавление/редактирование департамента</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<h1 th:if="${department.id != null}">Редактирование департамента</h1>
+<h1 th:if="${department.id == null}">Добавление нового департамента</h1>
+
+<form action="#" th:action="@{/departments/save}" th:object="${department}" method="post">
+    <label>Название:</label><br>
+    <input type="text" th:field="*{name}" /><br>
+    <label>Описание:</label><br>
+    <textarea th:field="*{description}"></textarea><br>
+    <input type="submit" value="Сохранить" />
+</form>
+
+<a th:href="@{/departments/list}">Назад к списку</a>
+</body>
+</html>

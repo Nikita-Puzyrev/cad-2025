@@ -1,0 +1,132 @@
+/* Основы стиля и сброс браузера */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Шапка страницы */
+header {
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 2rem;
+}
+
+/* Кнопка навигации */
+a {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+a:hover {
+    background-color: #0056b3;
+}
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    header {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    a {
+        padding: 0.8rem 1.5rem;
+        font-size: 1em;
+    }
+}
+
+/* Дополнительные улучшения */
+body {
+    overflow-x: hidden;
+}
+
+/* Градиентный фон для заголовков */
+h1 {
+    background-image: linear-gradient(to right, #007bff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Эффект плавного анимации кнопки */
+a {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+}
+
+a:hover::before {
+    transform: translateY(0);
+}
+
+/* Завершающие штрихи */
+a:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 4px;
+}
+
+/* Микроформаты для мобильности */
+footer {
+    font-size: 0.8em;
+    color: gray;
+    text-align: center;
+    margin-top: auto;
+    padding: 1rem;
+}
