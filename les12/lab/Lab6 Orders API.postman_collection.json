@@ -1,0 +1,185 @@
+{
+  "info": {
+    "_postman_id": "eb32e4c1-dac9-48c6-a41a-22ddd5f339e7",
+    "name": "Lab6 Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52887375",
+    "_collection_link": "https://go.postman.co/collection/52887375-eb32e4c1-dac9-48c6-a41a-22ddd5f339e7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Создать новый заказ (POST)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"new\",\r\n  \"totalPrice\": 500.00,\r\n  \"shippingAddress\": \"Moscow\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product-table/api/orders",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product-table",
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "(GET)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"new\",\r\n  \"totalPrice\": 500.00,\r\n  \"shippingAddress\": \"Moscow\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product-table/api/orders",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product-table",
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Получить заказ по ID (GET)",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"new\",\r\n  \"totalPrice\": 500.00,\r\n  \"shippingAddress\": \"Moscow\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product-table/api/orders/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product-table",
+            "api",
+            "orders",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Обновить заказ (PUT)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"updated\",\r\n  \"totalPrice\": 999.00,\r\n  \"shippingAddress\": \"Updated Address\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product-table/api/orders/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product-table",
+            "api",
+            "orders",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Удалить заказ (DELETE)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"updated\",\r\n  \"totalPrice\": 999.00,\r\n  \"shippingAddress\": \"Updated Address\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/product-table/api/orders/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "product-table",
+            "api",
+            "orders",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
