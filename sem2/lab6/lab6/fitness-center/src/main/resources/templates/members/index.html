@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Члены | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="//" class="navbar-brand">Фитнес-центр</a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link">Главная</a></li>
+                <li><a href="/members" class="navbar-link active">Члены</a></li>
+                <li><a href="/workouts" class="navbar-link">Тренировки</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container main-content">
+        <h1 class="page-title">Управление членами</h1>
+
+        <!-- Форма добавления -->
+        <div class="card mb-4">
+            <h2 class="card-title">Добавить члена</h2>
+            <form th:action="@{/members/add}" th:object="${member}" method="post">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Имя</label>
+                            <input type="text" class="form-control" th:field="*{name}" required>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Возраст</label>
+                            <input type="number" class="form-control" th:field="*{age}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Тип членства</label>
+                            <select class="form-control" th:field="*{membershipType}" required>
+                                <option value="Basic">Basic</option>
+                                <option value="Silver">Silver</option>
+                                <option value="Gold">Gold</option>
+                                <option value="Premium">Premium</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Телефон</label>
+                            <input type="text" class="form-control" th:field="*{phoneNumber}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </form>
+        </div>
+
+        <!-- Список членов -->
+        <!-- В списке членов используем Thymeleaf для данных из базы -->
+<div th:unless="${members.empty}">
+    <div th:each="member : ${members}" class="list-item">
+        <div class="list-item-header">
+            <div>
+                <strong th:text="${member.name}"></strong>
+                <span class="badge" th:text="${member.membershipType}"></span>
+            </div>
+            <div>
+                <span class="text-muted" th:text="${member.age} + ' лет'"></span>
+            </div>
+        </div>
+        <p class="text-muted mb-1" th:text="${member.phoneNumber}"></p>
+        <div class="mt-2">
+            <a th:href="@{/members/edit/{id}(id=${member.id})}" 
+               class="btn btn-sm btn-secondary">Изменить</a>
+            <a th:href="@{/members/delete/{id}(id=${member.id})}" 
+               class="btn btn-sm btn-danger"
+               onclick="return confirm('Удалить члена ' + [[${member.name}]] + '?')">Удалить</a>
+        </div>
+    </div>
+</div>
+
+<!-- Отображение статистики -->
+<div class="card mt-4">
+    <h3 class="card-title">📊 Статистика</h3>
+    <p>Всего членов: <strong th:text="${totalMembers}"></strong></p>
+</div>
+    </div>
+</body>
+</html>

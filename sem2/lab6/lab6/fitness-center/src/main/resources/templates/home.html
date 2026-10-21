@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">Фитнес-центр</a>
+            <ul class="navbar-menu">
+                <li><a href="/" class="navbar-link active">Главная</a></li>
+                <li><a href="/members" class="navbar-link">Члены</a></li>
+                <li><a href="/workouts" class="navbar-link">Тренировки</a></li>
+            </ul>
+            <div class="user-info" th:if="${username != 'anonymousUser'}">
+                <span class="username" th:text="${username}"></span>
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-secondary">Выйти</button>
+                </form>
+            </div>
+            <div class="user-info" th:unless="${username != 'anonymousUser'}">
+                <a href="/login" class="btn btn-sm btn-primary">Войти</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container main-content">
+        <!-- <h1 class="page-title" th:text="${welcomeMessage}"></h1> -->
+        
+        <!-- Информация о пользователе -->
+        <div class="card mb-4" th:if="${username != 'anonymousUser'}">
+            <div class="card-header">
+                <h2 class="card-title">Информация о пользователе</h2>
+            </div>
+            <div class="card-body">
+                <p>Вы вошли как: <strong th:text="${username}"></strong></p>
+                <p>Роли: 
+                    <span class="role-badge role-user">USER</span>
+                    <span class="role-badge role-moderator" th:if="${isModerator}">MODERATOR</span>
+                    <span class="role-badge role-admin" th:if="${isAdmin}">ADMIN</span>
+                </p>
+                <p>Доступные действия:</p>
+                <ul>
+                    <li th:if="${isModerator}">✓ Редактировать и отмечать тренировки</li>
+                    <li th:unless="${isModerator}">✗ Редактировать и отмечать тренировки</li>
+                    <li th:if="${isAdmin}">✓ Удалять тренировки и членов</li>
+                    <li th:unless="${isAdmin}">✗ Удалять тренировки и членов</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Для неавторизованных пользователей -->
+        <div class="card mb-4" th:unless="${username != 'anonymousUser'}">
+            <div class="card-header">
+                <h2 class="card-title">Требуется авторизация</h2>
+            </div>
+            <div class="card-body">
+                <p>Для доступа к функциям системы необходимо войти в систему.</p>
+                <a href="/login" class="btn btn-primary">Войти</a>
+            </div>
+        </div>
+
+        <!-- Функциональные блоки -->
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <h3 class="card-title">Управление членами</h3>
+                    <p>Требуется роль USER для просмотра.</p>
+                    <div class="access-restricted" th:unless="${username != 'anonymousUser'}">
+                        <p class="text-muted">Для доступа необходимо войти в систему</p>
+                    </div>
+                    <a href="/members" class="btn btn-primary mt-2" 
+                       th:if="${username != 'anonymousUser'}">Перейти</a>
+                    <a href="/login" class="btn btn-secondary mt-2" 
+                       th:unless="${username != 'anonymousUser'}">Войти</a>
+                </div>
+            </div>
+            
+            <div class="col-6">
+                <div class="card">
+                    <h3 class="card-title">Управление тренировками</h3>
+                    <p>Требуется роль USER для просмотра.</p>
+                    <div class="access-restricted" th:unless="${username != 'anonymousUser'}">
+                        <p class="text-muted">Для доступа необходимо войти в систему</p>
+                    </div>
+                    <a href="/workouts" class="btn btn-primary mt-2" 
+                       th:if="${username != 'anonymousUser'}">Перейти</a>
+                    <a href="/login" class="btn btn-secondary mt-2" 
+                       th:unless="${username != 'anonymousUser'}">Войти</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Тестовые данные -->
+        <!-- <div class="card mt-4">
+            <h3 class="card-title">Тестовые пользователи</h3>
+            <p>Для тестирования системы используйте:</p>
+            <ul>
+                <li><strong>Логин:</strong> user <strong>Пароль:</strong> password (обычный пользователь)</li>
+                <li><strong>Логин:</strong> moderator <strong>Пароль:</strong> password (модератор)</li>
+                <li><strong>Логин:</strong> admin <strong>Пароль:</strong> password (администратор)</li>
+            </ul>
+        </div> -->
+    </div>
+</body>
+</html>

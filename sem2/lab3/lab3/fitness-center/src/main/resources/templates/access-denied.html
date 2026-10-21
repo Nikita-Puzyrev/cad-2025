@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ запрещен | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-brand">Фитнес-центр</a>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="access-denied-message">
+            <h1>Доступ запрещен</h1>
+            <p>У вас недостаточно прав для доступа к этой странице.</p>
+            <p class="text-muted">Требуемая роль: 
+                <span th:text="${#httpServletRequest.attribute('SPRING_SECURITY_403_EXCEPTION')?.message}"></span>
+            </p>
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary">На главную</a>
+                <a href="/login?logout" class="btn btn-secondary">Войти под другим пользователем</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

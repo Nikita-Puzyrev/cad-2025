@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">Фитнес-центр</h1>
+        <h2 class="text-center mb-4">Вход в систему</h2>
+        
+        <div th:if="${param.error}" class="login-error">
+            Неверное имя пользователя или пароль
+        </div>
+        
+        <div th:if="${param.logout}" class="login-success">
+            Вы успешно вышли из системы
+        </div>
+        
+        <form th:action="@{/login}" method="post" class="login-form">
+            <div class="form-group">
+                <label class="form-label">Имя пользователя</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">Войти</button>
+        </form>
+        
+        <div class="mt-4">
+            <h4>Тестовые пользователи:</h4>
+            <ul>
+                <li><strong>user/password</strong> - обычный пользователь</li>
+                <li><strong>moderator/password</strong> - модератор</li>
+                <li><strong>admin/password</strong> - администратор</li>
+            </ul>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="/" class="text-muted">← Вернуться на главную</a>
+        </div>
+    </div>
+</body>
+</html>

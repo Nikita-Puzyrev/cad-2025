@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренировки | Фитнес-центр</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/fitness/" class="navbar-brand">Фитнес-центр</a>
+            <ul class="navbar-menu">
+                <li><a href="/fitness/" class="navbar-link">Главная</a></li>
+                <li><a href="/fitness/members" class="navbar-link">Члены</a></li>
+                <li><a href="/fitness/workouts" class="navbar-link active">Тренировки</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="container main-content">
+        <h1 class="page-title">Управление тренировками</h1>
+
+        <!-- Форма добавления -->
+        <div class="card mb-4">
+            <h2 class="card-title">Добавить тренировку</h2>
+            <form th:action="@{/fitness/workouts/add}" th:object="${workout}" method="post">
+                <div class="form-group">
+                    <label class="form-label">Название</label>
+                    <input type="text" class="form-control" th:field="*{title}" required>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Тип</label>
+                            <select class="form-control" th:field="*{workoutType}" required>
+                                <option value="">Выберите тип</option>
+                                <option value="Кардио">Кардио</option>
+                                <option value="Силовая">Силовая</option>
+                                <option value="Йога">Йога</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="form-label">Продолжительность (мин)</label>
+                            <input type="number" class="form-control" th:field="*{durationMinutes}" min="5" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Описание</label>
+                    <textarea class="form-control" th:field="*{description}" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Добавить</button>
+            </form>
+        </div>
+
+        <!-- Список тренировок -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Список тренировок</h2>
+                <span class="text-muted" th:text="${workouts.size()} + ' тренировок'"></span>
+            </div>
+            
+            <div th:if="${workouts.empty}" class="text-center p-4">
+                <p class="text-muted">Тренировок пока нет</p>
+            </div>
+            
+            <div th:unless="${workouts.empty}">
+                <div th:each="workout : ${workouts}" class="list-item">
+                    <div class="list-item-header">
+                        <div>
+                            <strong th:text="${workout.title}"></strong>
+                            <span class="badge" th:text="${workout.workoutType}"></span>
+                        </div>
+                        <div>
+                            <span class="text-muted" th:text="${workout.durationMinutes} + ' мин.'"></span>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-1" th:text="${workout.description}"></p>
+                    <div>
+                        <span th:if="${workout.completed}" class="text-success">✓ Выполнено</span>
+                        <span th:unless="${workout.completed}" class="text-warning">○ Ожидает</span>
+                    </div>
+                    <div class="mt-2">
+                        <a th:href="@{/fitness/workouts/complete/{id}(id=${workout.id})}" 
+                           class="btn btn-sm btn-success" th:unless="${workout.completed}">Выполнить</a>
+                        <a th:href="@{/fitness/workouts/edit/{id}(id=${workout.id})}" 
+                           class="btn btn-sm btn-secondary">Изменить</a>
+                        <a th:href="@{/fitness/workouts/delete/{id}(id=${workout.id})}" 
+                           class="btn btn-sm btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="card mt-4">
+            <h3 class="card-title">Статистика</h3>
+            <p th:text="${stats}"></p>
+        </div>
+    </div>
+</body>
+</html>

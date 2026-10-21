@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клиент фитнес-центра</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .api-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        
+        .btn:hover {
+            background: #764ba2;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+        
+        .login-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            background: #27ae60;
+        }
+        
+        .login-btn:hover {
+            background: #219653;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏋️ Клиент фитнес-центра</h1>
+        
+        <div class="login-section" id="loginSection">
+            <h2>🔐 Вход в систему</h2>
+            <input type="text" id="username" placeholder="Логин (admin)" value="admin">
+            <input type="password" id="password" placeholder="Пароль (admin)" value="admin">
+            <button class="btn login-btn" onclick="login()">Войти</button>
+            <div id="loginError" class="error"></div>
+        </div>
+        
+        <div class="status" id="connectionStatus">Статус: Не подключен</div>
+        
+        <!-- Информация о сервере -->
+        <div class="api-section">
+            <h2>📡 Проверка подключения</h2>
+            <button class="btn" onclick="checkConnection()">Проверить сервер</button>
+            <button class="btn" onclick="getServerInfo()">Информация о сервере</button>
+            <div class="result" id="serverResult"></div>
+        </div>
+        
+        <!-- Управление членами -->
+        <div class="api-section">
+            <h2>👥 Управление членами</h2>
+            <button class="btn" onclick="getAllMembers()">Получить всех членов</button>
+            <button class="btn" onclick="addMember()">Добавить тестового члена</button>
+            <button class="btn" onclick="getMemberStats()">Статистика</button>
+            <div class="result" id="membersResult"></div>
+        </div>
+        
+        <!-- Управление тренировками -->
+        <div class="api-section">
+            <h2>🏋️ Управление тренировками</h2>
+            <button class="btn" onclick="getAllWorkouts()">Получить все тренировки</button>
+            <button class="btn" onclick="addWorkout()">Добавить тренировку</button>
+            <button class="btn" onclick="getWorkoutStats()">Статистика тренировок</button>
+            <div class="result" id="workoutsResult"></div>
+        </div>
+        
+        <!-- Тестовые данные -->
+        <div class="api-section">
+            <h2>🔄 Тестовые операции</h2>
+            <button class="btn" onclick="testAllAPIs()">Тест всех API</button>
+            <button class="btn logout-btn" onclick="logout()">Выйти</button>
+            <div class="result" id="testResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация
+        const API_BASE_URL = 'http://localhost:8080';
+        let authToken = null;
+        
+        // Проверка подключения
+        async function checkConnection() {
+            try {
+                showResult('serverResult', 'Проверяем подключение к серверу...');
+                
+                const response = await fetch(`${API_BASE_URL}/`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    updateConnectionStatus(true);
+                    showResult('serverResult', `✅ Сервер доступен!\nОтвет: ${text}`);
+                } else {
+                    updateConnectionStatus(false);
+                    showResult('serverResult', `❌ Ошибка: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                updateConnectionStatus(false);
+                showResult('serverResult', `❌ Ошибка подключения: ${error.message}`);
+            }
+        }
+        
+        // Получение информации о сервере
+        async function getServerInfo() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/about`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const text = await response.text();
+                    showResult('serverResult', `ℹ️ Информация о сервере:\n${text}`);
+                } else {
+                    showResult('serverResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('serverResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Вход в систему
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!username || !password) {
+                errorDiv.textContent = 'Введите логин и пароль';
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    body: formData,
+                    redirect: 'manual'
+                });
+                
+                // При успешной авторизации Spring Security перенаправляет на главную
+                if (response.status === 302 || response.status === 200) {
+                    authToken = btoa(`${username}:${password}`);
+                    errorDiv.textContent = '';
+                    document.getElementById('loginSection').style.display = 'none';
+                    showResult('serverResult', `✅ Успешный вход как ${username}`);
+                    updateConnectionStatus(true);
+                } else {
+                    errorDiv.textContent = 'Ошибка авторизации';
+                }
+            } catch (error) {
+                errorDiv.textContent = `Ошибка: ${error.message}`;
+            }
+        }
+        
+        // Выход
+        function logout() {
+            authToken = null;
+            document.getElementById('loginSection').style.display = 'block';
+            showResult('serverResult', '✅ Вы вышли из системы');
+            updateConnectionStatus(false);
+        }
+        
+        // Получить всех членов
+        async function getAllMembers() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/members`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    // Парсим HTML чтобы получить данные
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const members = [];
+                    
+                    // Ищем элементы списка (это упрощенный парсинг)
+                    doc.querySelectorAll('.list-item').forEach(item => {
+                        members.push(item.textContent.trim());
+                    });
+                    
+                    if (members.length > 0) {
+                        showResult('membersResult', `Найдено ${members.length} членов:\n${members.join('\n')}`);
+                    } else {
+                        showResult('membersResult', 'Членов не найдено. Ответ сервера:\n' + html.substring(0, 500));
+                    }
+                } else if (response.status === 403) {
+                    showResult('membersResult', '❌ Доступ запрещен. Необходима авторизация.');
+                } else {
+                    showResult('membersResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('membersResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Добавить тестового члена
+        async function addMember() {
+            const testMember = {
+                name: `Тестовый член ${new Date().getTime()}`,
+                membershipType: "Basic",
+                age: 25,
+                phoneNumber: "+79160000000",
+                email: "test@example.com",
+                trainerId: 1
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/members/add`, {
+                    method: 'POST',
+                    headers: getHeadersWithContentType(),
+                    body: new URLSearchParams(testMember)
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    showResult('membersResult', '✅ Член добавлен!\n' + html.substring(0, 300));
+                } else {
+                    showResult('membersResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('membersResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Статистика членов
+        async function getMemberStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/members/stats`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    showResult('membersResult', '📊 Статистика членов:\n' + html.substring(0, 500));
+                } else {
+                    showResult('membersResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('membersResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Получить все тренировки
+        async function getAllWorkouts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/workouts`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const workouts = [];
+                    
+                    doc.querySelectorAll('.list-item').forEach(item => {
+                        workouts.push(item.textContent.trim());
+                    });
+                    
+                    if (workouts.length > 0) {
+                        showResult('workoutsResult', `Найдено ${workouts.length} тренировок:\n${workouts.join('\n')}`);
+                    } else {
+                        showResult('workoutsResult', 'Тренировок не найдено. Ответ сервера:\n' + html.substring(0, 500));
+                    }
+                } else {
+                    showResult('workoutsResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('workoutsResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Добавить тренировку
+        async function addWorkout() {
+            const testWorkout = {
+                title: `Тестовая тренировка ${new Date().getTime()}`,
+                description: "Тестовое описание",
+                workoutType: "Кардио",
+                durationMinutes: 30,
+                difficultyLevel: "Легкий"
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/workouts/add`, {
+                    method: 'POST',
+                    headers: getHeadersWithContentType(),
+                    body: new URLSearchParams(testWorkout)
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    showResult('workoutsResult', '✅ Тренировка добавлена!\n' + html.substring(0, 300));
+                } else {
+                    showResult('workoutsResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('workoutsResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Статистика тренировок
+        async function getWorkoutStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/workouts/stats`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    showResult('workoutsResult', '📊 Статистика тренировок:\n' + html.substring(0, 500));
+                } else {
+                    showResult('workoutsResult', `❌ Ошибка: ${response.status}`);
+                }
+            } catch (error) {
+                showResult('workoutsResult', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        // Тест всех API
+        async function testAllAPIs() {
+            showResult('testResult', '🧪 Начинаем тестирование всех API...');
+            
+            const tests = [
+                { name: 'Проверка сервера', func: checkConnection },
+                { name: 'Получение членов', func: getAllMembers },
+                { name: 'Получение тренировок', func: getAllWorkouts }
+            ];
+            
+            for (const test of tests) {
+                showResult('testResult', `\n▶️  ${test.name}...`);
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Задержка
+                await test.func();
+            }
+            
+            showResult('testResult', '✅ Тестирование завершено!');
+        }
+        
+        // Вспомогательные функции
+        function getHeaders() {
+            const headers = {};
+            if (authToken) {
+                headers['Authorization'] = `Basic ${authToken}`;
+            }
+            return headers;
+        }
+        
+        function getHeadersWithContentType() {
+            const headers = getHeaders();
+            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            return headers;
+        }
+        
+        function showResult(elementId, text) {
+            document.getElementById(elementId).textContent = text;
+        }
+        
+        function updateConnectionStatus(connected) {
+            const statusDiv = document.getElementById('connectionStatus');
+            if (connected) {
+                statusDiv.textContent = '✅ Статус: Подключено к серверу';
+                statusDiv.className = 'status connected';
+            } else {
+                statusDiv.textContent = '❌ Статус: Не подключено';
+                statusDiv.className = 'status disconnected';
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Автоматически проверяем подключение при загрузке
+            checkConnection();
+        });
+    </script>
+</body>
+</html>
