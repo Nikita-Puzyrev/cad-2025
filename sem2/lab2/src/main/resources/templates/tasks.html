@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Список задач</title>
+    <style>
+        body { font: 1rem/1.5 system-ui, sans-serif; max-width: 46rem; margin: 2rem auto; padding: 0 1rem; color: #192638; }
+        input, button { font: inherit; padding: .25rem .5rem; }
+        button { cursor: pointer; }
+        form, label, ul { margin-block: .75rem; }
+        li { padding: .5rem 0; }
+        .actions form { display: inline-block; margin: 0 .25rem .25rem 0; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Список задач</h1>
+    <form th:if="${signedIn}" th:action="@{/logout}" method="post">
+        <button>Выйти</button>
+    </form>
+</header>
+<main>
+    <form th:if="${canSearch}" th:action="@{/search}" method="get">
+        <label for="query">Поиск</label>
+        <input type="search" id="query" name="query" th:value="${query}">
+        <button>Найти</button>
+        <a th:if="${!query.isEmpty()}" th:href="@{/}">Сбросить</a>
+    </form>
+
+    <p th:if="${tasks.isEmpty()}">Задач нет.</p>
+    <ul th:unless="${tasks.isEmpty()}">
+        <li th:each="task : ${tasks}">
+            <strong th:text="${task.title}"></strong>
+            <span th:unless="${task.description.isEmpty()}" th:text="${task.description}"></span>
+            <span th:text="${task.completed ? 'Выполнена' : 'В работе'}"></span>
+            <a th:if="${showTaskDetails}" th:href="@{/details/{id}(id=${task.id})}">Подробнее</a>
+            <div class="actions" th:if="${canManage}">
+                <form th:action="@{/updateTask/{id}(id=${task.id})}" method="post">
+                    <input type="hidden" name="completed" th:value="${!task.completed}">
+                    <button th:text="${task.completed ? 'Вернуть в работу' : 'Выполнить'}"></button>
+                </form>
+                <form th:action="@{/deleteTask/{id}(id=${task.id})}" method="post">
+                    <button>Удалить</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+
+    <section th:if="${canAdd}">
+        <h2>Новая задача</h2>
+        <form th:action="@{/addTask}" method="post">
+            <label for="title">Название</label>
+            <input id="title" name="title" required>
+            <label for="description">Описание</label>
+            <input id="description" name="description">
+            <button>Добавить</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

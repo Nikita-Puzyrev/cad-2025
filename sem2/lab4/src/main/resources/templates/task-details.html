@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Карточка задачи</title>
+    <style>
+        body { font: 1rem/1.5 system-ui, sans-serif; max-width: 46rem; margin: 2rem auto; padding: 0 1rem; color: #192638; }
+        input, button, select { font: inherit; padding: .25rem .5rem; }
+        pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    </style>
+</head>
+<body th:with="task=${details.task}">
+<a th:href="@{/}">К списку задач</a>
+<h1 th:text="${task.title}"></h1>
+<p th:text="${task.description}"></p>
+<dl>
+    <dt>Статус</dt>
+    <dd th:text="${task.completed ? 'Выполнена' : 'В работе'}"></dd>
+    <dt>Автор</dt>
+    <dd th:text="${task.owner}"></dd>
+    <dt>Создана</dt>
+    <dd th:text="${task.createdAt}"></dd>
+    <dt>Приоритет</dt>
+    <dd th:text="${task.priority}"></dd>
+    <dt>Категория</dt>
+    <dd th:text="${task.category.isEmpty() ? 'Без категории' : task.category}"></dd>
+</dl>
+<form th:if="${canManage}" th:action="@{/details/{id}/settings(id=${task.id})}" method="post">
+    <label>Приоритет
+        <select name="priority">
+            <option th:each="priority : ${priorities}" th:value="${priority}"
+                    th:selected="${priority == task.priority}" th:text="${priority}"></option>
+        </select>
+    </label>
+    <label>Категория <input name="category" maxlength="80" th:value="${task.category}"></label>
+    <button>Сохранить</button>
+</form>
+
+<h2>Подзадачи</h2>
+<p th:if="${details.subtasks.isEmpty()}">Подзадач нет.</p>
+<ul>
+    <li th:each="sub : ${details.subtasks}">
+        <span th:text="${sub.description}"></span>
+        <span th:text="${sub.completed ? 'Выполнена' : 'В работе'}"></span>
+        <form th:if="${canManage}" th:action="@{/details/{id}/subtasks/{subId}(id=${task.id},subId=${sub.id})}" method="post">
+            <input type="hidden" name="completed" th:value="${!sub.completed}">
+            <button th:text="${sub.completed ? 'Вернуть в работу' : 'Выполнить'}"></button>
+        </form>
+    </li>
+</ul>
+<form th:if="${canManage}" th:action="@{/details/{id}/subtasks(id=${task.id})}" method="post">
+    <label>Описание <input name="description" required></label>
+    <button>Добавить подзадачу</button>
+</form>
+
+<h2>История изменений</h2>
+<details th:each="change : ${details.changes}">
+    <summary th:text="${change.changedAt}"></summary>
+    <p th:if="${change.oldState != null}">До изменения</p>
+    <pre th:if="${change.oldState != null}" th:text="${change.oldState}"></pre>
+    <p>После изменения</p>
+    <pre th:text="${change.newState}"></pre>
+</details>
+</body>
+</html>
