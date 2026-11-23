@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ЛР6 Android</string>
+    <string name="hello_message">Hello World!</string>
+    <string name="count_button">Нажать</string>
+    <string name="counter_initial">Нажатий: 0</string>
+    <string name="counter_value">Нажатий: %1$d</string>
+    <string name="sdk_info">API %1$d, устройство %2$s</string>
+</resources>

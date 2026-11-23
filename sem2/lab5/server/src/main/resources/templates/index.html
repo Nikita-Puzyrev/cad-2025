@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач</title>
+    <style>
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #222; }
+        h1 { font-size: 22px; margin: 0 0 4px; }
+        .muted { color: #777; font-size: 13px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+        th, td { border: 1px solid #ccc; padding: 6px 8px; font-size: 14px; text-align: left; vertical-align: top; }
+        th { background: #eef2f7; }
+        form.inline { display: inline; }
+        .card { border: 1px solid #ccc; padding: 12px; margin-top: 16px; max-width: 720px; }
+        .card h2 { font-size: 16px; margin: 0 0 10px; }
+        label { display: block; margin-top: 8px; font-size: 13px; }
+        input[type=text], textarea, select { width: 100%; padding: 4px; font-family: inherit; font-size: 14px; }
+        button { margin-top: 10px; padding: 5px 12px; font-size: 14px; cursor: pointer; }
+        .done { text-decoration: line-through; color: #888; }
+        .sub { margin: 2px 0 2px 12px; font-size: 13px; }
+        .top { display: flex; justify-content: space-between; align-items: baseline; }
+    </style>
+</head>
+<body>
+<div class="top">
+    <div>
+        <h1>Список задач</h1>
+        <div class="muted">
+            Пользователь: <span th:text="${currentUser}">user</span> ·
+            всего задач: <span th:text="${total}">0</span> ·
+            выполнено: <span th:text="${done}">0</span>
+        </div>
+    </div>
+    <div>
+        <a sec:authorize="hasAnyRole('MODERATOR','ADMIN')" href="/history">История изменений</a>
+        <form class="inline" method="post" th:action="@{/logout}" style="margin-left:12px">
+            <button type="submit">Выйти</button>
+        </form>
+    </div>
+</div>
+
+<form method="get" action="/" class="card">
+    <h2>Фильтр</h2>
+    <label>Категория
+        <select name="category">
+            <option value="">все</option>
+            <option th:each="c : ${categories}" th:value="${c}" th:text="${c}"
+                    th:selected="${c == selectedCategory}">Учеба</option>
+        </select>
+    </label>
+    <label>Приоритет
+        <select name="priority">
+            <option value="">любой</option>
+            <option th:each="p : ${priorities}" th:value="${p}" th:text="${p}"
+                    th:selected="${p == selectedPriority}">NORMAL</option>
+        </select>
+    </label>
+    <label>Статус
+        <select name="completed">
+            <option value="">любой</option>
+            <option value="false" th:selected="${selectedCompleted != null and !selectedCompleted}">активные</option>
+            <option value="true" th:selected="${selectedCompleted != null and selectedCompleted}">выполненные</option>
+        </select>
+    </label>
+    <button type="submit">Применить</button>
+    <a href="/" style="margin-left:10px">сбросить</a>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th style="width:40px">№</th>
+        <th>Задача</th>
+        <th style="width:110px">Категория</th>
+        <th style="width:100px">Приоритет</th>
+        <th style="width:130px">Создана</th>
+        <th style="width:90px">Статус</th>
+        <th sec:authorize="hasAnyRole('MODERATOR','ADMIN')" style="width:90px">Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task, iter : ${tasks}">
+        <td th:text="${iter.count}">1</td>
+        <td>
+            <span th:classappend="${task.completed} ? 'done'" th:text="${task.title}">Задача</span>
+            <div class="muted" th:text="${task.description}">Описание</div>
+            <div class="sub" th:each="sub : ${task.subTasks}">
+                <form class="inline" method="post" th:action="@{/toggleSubTask/{id}(id=${sub.id})}"
+                      sec:authorize="hasAnyRole('USER','MODERATOR','ADMIN')">
+                    <button type="submit" style="margin:0;padding:0 4px;font-size:12px">✓</button>
+                </form>
+                <span th:classappend="${sub.completed} ? 'done'" th:text="${sub.description}">подзадача</span>
+            </div>
+            <form class="inline" method="post" th:action="@{/addSubTask/{id}(id=${task.id})}"
+                  sec:authorize="hasAnyRole('USER','MODERATOR','ADMIN')" style="margin-top:6px">
+                <input type="text" name="description" placeholder="новая подзадача" style="width:70%">
+                <button type="submit" style="margin:0;padding:2px 8px;font-size:12px">+</button>
+            </form>
+        </td>
+        <td th:text="${task.category}">Учеба</td>
+        <td th:text="${task.priority}">NORMAL</td>
+        <td th:text="${#temporals.format(task.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2026 10:00</td>
+        <td>
+            <form class="inline" method="post" th:action="@{/updateTask/{id}(id=${task.id})}"
+                  sec:authorize="hasAnyRole('MODERATOR','ADMIN')">
+                <input type="hidden" name="completed" th:value="${!task.completed}">
+                <button type="submit" style="margin:0;padding:2px 8px;font-size:12px"
+                        th:text="${task.completed} ? 'вернуть' : 'готово'">готово</button>
+            </form>
+            <span th:if="${task.author != null}" class="muted"
+                  th:text="${task.author.username}">user</span>
+        </td>
+        <td sec:authorize="hasAnyRole('MODERATOR','ADMIN')">
+            <a th:href="@{/deleteTask/{id}(id=${task.id})}">удалить</a>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(tasks)}">
+        <td colspan="7" class="muted">Задач нет</td>
+    </tr>
+    </tbody>
+</table>
+
+<form method="post" th:action="@{/addTask}" class="card"
+      sec:authorize="hasAnyRole('USER','MODERATOR','ADMIN')">
+    <h2>Новая задача</h2>
+    <label>Название <input type="text" name="title" required maxlength="200"></label>
+    <label>Описание <textarea name="description" rows="2" maxlength="500"></textarea></label>
+    <label>Категория <input type="text" name="category" maxlength="60" placeholder="Учеба"></label>
+    <label>Приоритет
+        <select name="priority">
+            <option value="HIGH">HIGH</option>
+            <option value="NORMAL" selected>NORMAL</option>
+            <option value="LOW">LOW</option>
+        </select>
+    </label>
+    <button type="submit">Добавить</button>
+</form>
+</body>
+</html>
