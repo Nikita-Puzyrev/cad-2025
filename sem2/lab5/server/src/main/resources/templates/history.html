@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>История</title>
+    <style>
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #222; }
+        h1 { font-size: 22px; }
+        h2 { font-size: 16px; margin-top: 26px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+        th, td { border: 1px solid #ccc; padding: 5px 8px; font-size: 13px; text-align: left; vertical-align: top; }
+        th { background: #eef2f7; }
+        .muted { color: #777; font-size: 13px; }
+    </style>
+</head>
+<body>
+<h1>История</h1>
+<a href="/">← к списку задач</a>
+
+<h2>Пользователи</h2>
+<table>
+    <tr><th>ID</th><th>Имя</th><th>Email</th><th>Логин</th><th>Роль</th></tr>
+    <tr th:each="u : ${users}">
+        <td th:text="${u.id}">1</td>
+        <td th:text="${u.name}">Имя</td>
+        <td th:text="${u.email}">mail</td>
+        <td th:text="${u.username}">login</td>
+        <td th:text="${u.role}">ROLE</td>
+    </tr>
+</table>
+
+<h2>История изменений задач</h2>
+<table>
+    <tr><th>Время</th><th>Задача №</th><th>Было</th><th>Стало</th></tr>
+    <tr th:each="h : ${taskHistory}">
+        <td th:text="${#temporals.format(h.changedAt, 'dd.MM.yyyy HH:mm:ss')}">время</td>
+        <td th:text="${h.task.id}">1</td>
+        <td th:text="${h.oldState} ?: '—'">—</td>
+        <td th:text="${h.newState}">новое</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(taskHistory)}">
+        <td colspan="4" class="muted">Записей нет</td>
+    </tr>
+</table>
+
+<h2>История входов</h2>
+<table>
+    <tr><th>Время</th><th>Пользователь</th><th>IP-адрес</th></tr>
+    <tr th:each="l : ${loginHistory}">
+        <td th:text="${#temporals.format(l.loginTime, 'dd.MM.yyyy HH:mm:ss')}">время</td>
+        <td th:text="${l.user.username}">login</td>
+        <td th:text="${l.ipAddress}">127.0.0.1</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(loginHistory)}">
+        <td colspan="3" class="muted">Записей нет</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,2 +1,9 @@
 .DS_Store
 *.pdf
+**/target/
+.idea/
+*.iml
+**/build/
+.gradle/
+local.properties
+*.apk
