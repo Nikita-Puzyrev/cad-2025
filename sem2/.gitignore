@@ -1,0 +1,9 @@
+**/target/
+**/build/
+**/.gradle/
+**/.idea/
+**/*.iml
+**/local.properties
+**/.env
+*.log
+**/*.apk

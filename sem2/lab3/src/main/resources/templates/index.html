@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач</title>
+    <style>
+        body { max-width: 850px; margin: 30px auto; padding: 0 15px; font-family: Arial, sans-serif; }
+        input, button { margin: 4px; padding: 6px; }
+        li { margin-bottom: 12px; }
+        .actions { display: inline; }
+    </style>
+</head>
+<body>
+<h1>Список задач</h1>
+<p>Вы вошли как <strong th:text="${username}"></strong>.</p>
+<form th:action="@{/logout}" method="post"><button type="submit">Выйти</button></form>
+<form th:if="${canSearch}" th:action="@{/search}" method="get">
+    <label>Поиск: <input name="q" th:value="${query}" placeholder="Название или описание"></label>
+    <button type="submit">Найти</button>
+    <a th:href="@{/}">Все задачи</a>
+</form>
+<p th:if="${#lists.isEmpty(tasks)}">Задач нет.</p>
+<ul>
+    <li th:each="task : ${tasks}">
+        <strong th:text="${task.title}"></strong> — <span th:text="${task.description}"></span>
+        (<span th:text="${task.completed ? 'выполнена' : 'не выполнена'}"></span>)
+        <form th:if="${canModerate}" class="actions" th:action="@{/updateTask/{id}(id=${task.id})}" method="post">
+            <input type="hidden" name="completed" th:value="${!task.completed}">
+            <button type="submit" th:text="${task.completed ? 'Вернуть в работу' : 'Выполнить'}"></button>
+        </form>
+        <form th:if="${canModerate}" class="actions" th:action="@{/deleteTask/{id}(id=${task.id})}" method="post">
+            <button type="submit">Удалить</button>
+        </form>
+    </li>
+</ul>
+<h2>Добавить задачу</h2>
+<form th:action="@{/addTask}" method="post">
+    <label>Название: <input name="title" required></label>
+    <label>Описание: <input name="description"></label>
+    <button type="submit">Добавить</button>
+</form>
+</body>
+</html>
