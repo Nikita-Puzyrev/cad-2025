@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Список задач</string>
+    <string name="username">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_out">Выйти</string>
+    <string name="enter_credentials">Введите логин и пароль</string>
+    <string name="invalid_credentials">Неверный логин или пароль</string>
+    <string name="load_error">Не удалось загрузить задачи</string>
+    <string name="connection_error">Сервер недоступен</string>
+    <string name="empty_tasks">Задач нет</string>
+    <string name="completed">Выполнена</string>
+    <string name="pending">В работе</string>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
+</resources>
